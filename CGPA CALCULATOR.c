@@ -4,7 +4,7 @@ int main() {
     int subjects;
     float Gradepoints, credit, Totalpoints = 0.0, Totalcredits = 0.0;
 
-    // USER INPUTS
+    // USER
     printf("Enter the number of subjects: ");
     scanf("%d", &subjects);
 
