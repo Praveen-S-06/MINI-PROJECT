@@ -1,36 +1,78 @@
 #include <stdio.h>
-#include <math.h>
+
+// Function to find the starting day of the week for a given month and year
+int findStartDay(int year, int month) {
+    int day = 1;
+    int m, d, y;
+
+    // Adjust month and year if month is January or February
+    if (month < 3) {
+        month += 12;
+        year -= 1;
+    }
+
+    // Zeller's Congruence algorithm to find the day of the week
+    m = (13 * (month + 1)) / 5;
+    y = year % 100;
+    d = year / 100;
+
+    return (day + m + y + y / 4 + d / 4 - 2 * d) % 7;
+}
+
+// Function to print the calendar for a given month and year
+void printCalendar(int year, int month) {
+    // Array containing number of days in each month
+    int daysInMonth[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+    char *months[] = {"January", "February", "March", "April", "May", "June", "July",
+                      "August", "September", "October", "November", "December"};
+
+    // Print month and year
+    printf("\n===========================\n");
+    printf("     %s %d\n", months[month - 1], year);
+    printf("===========================\n");
+
+    // Print weekdays header
+    printf("Sun  Mon  Tue  Wed  Thu  Fri  Sat\n");
+
+    // Find starting day of the week for the first day of the month
+    int startDay = findStartDay(year, month);
+
+    // Print spaces for days before the starting day
+    for (int i = 0; i < startDay; i++) {
+        printf("     ");
+    }
+
+    // Print days of the month
+    for (int day = 1; day <= daysInMonth[month - 1]; day++) {
+        printf("%-5d", day);
+        startDay++;
+        if (startDay > 6) {
+            startDay = 0;
+            printf("\n");
+        }
+    }
+
+    printf("\n");
+}
 
 int main() {
- time_t t = time(NULL);
- struct tm *cur = localtime(&t);
- int year = 1900 + cur->tm_year;
- printf("Enter the year: ");
- scanf("%d", &year);
+    int year, month;
 
- int days = 0;
- for (int i = 1; i <= 12; i++) {
- int daysInMonth = 0;
- switch (i) {
- case 2:
- daysInMonth = 28;
- break;
- case 4:
- case 6:
- case 9:
- case 11:
- daysInMonth = 30;
- break;
- default:
- daysInMonth = 31;
- break;
- }
- printf("%s %d\n", months[i], daysInMonth);
- days += daysInMonth;
- }
+    // Input year and month
+    printf("Enter year: ");
+    scanf("%d", &year);
 
- int daysInYear = days + 1;
- printf("There are %d days in the year.\n", daysInYear);
+    printf("Enter month (1-12): ");
+    scanf("%d", &month);
 
- return 0;
+    // Validate month
+    if (month < 1 || month > 12) {
+        printf("Invalid month input.\n");
+        return 1;
+    }
+
+    // Print calendar
+    printCalendar(year, month);
+
+    return 0;
 }
